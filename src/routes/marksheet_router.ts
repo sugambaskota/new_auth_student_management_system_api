@@ -24,7 +24,7 @@ router.get('/marksheet', auth, async (req: any, res: any) => {
             }
         });
         for (let i = 0; i < marks.length; i++) {
-            marks[i] = marksDto.marksheetOut(marks[i]);
+            marks[i] = await marksDto.marksheetOut(marks[i]);
         }
         res.status(200).json(marks);
     } catch (e) {

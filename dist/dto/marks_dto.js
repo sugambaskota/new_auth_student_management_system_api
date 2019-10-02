@@ -8,6 +8,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+const User = require('../models/user_model');
+const Subject = require('../models/subject_model');
 const sequelize = require('../db/sequelize');
 module.exports = {
     marksIn: (marks) => {
@@ -29,12 +31,24 @@ module.exports = {
     },
     marksheetOut: function (marks) {
         return __awaiter(this, void 0, void 0, function* () {
-            const SUBJECT = yield sequelize.query(`SELECT name FROM subjects WHERE uuid::text='${marks.subjectId}';`);
-            const TEACHER_NAME = yield sequelize.query(`SELECT name FROM users WHERE uuid::text='${marks.teacherId}';`);
+            const user = yield User.findOne({
+                where: {
+                    uuid: marks.teacherId
+                },
+                attributes: ['name']
+            });
+            const subject = yield Subject.findOne({
+                where: {
+                    uuid: marks.subjectId
+                },
+                attributes: ['name']
+            });
+            // const SUBJECT = await sequelize.query(`SELECT name FROM subjects WHERE uuid::text='${marks.subjectId}';`);
+            // const TEACHER_NAME = await sequelize.query(`SELECT name FROM users WHERE uuid::text='${marks.teacherId}';`);
             return {
-                "SUBJECT": SUBJECT,
+                "SUBJECT": subject.name,
                 "MARKS": marks.marks,
-                "TEACHER": TEACHER_NAME
+                "TEACHER": user.name
             };
         });
     },

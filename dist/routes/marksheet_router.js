@@ -37,7 +37,7 @@ router.get('/marksheet', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
             }
         });
         for (let i = 0; i < marks.length; i++) {
-            marks[i] = marksDto.marksheetOut(marks[i]);
+            marks[i] = yield marksDto.marksheetOut(marks[i]);
         }
         res.status(200).json(marks);
     }
