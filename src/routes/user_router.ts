@@ -78,7 +78,7 @@ router.delete('/users/remove', auth, async (req: any, res: any) => {
     }
 });
 
-router.patch('/users/update', auth, async (req: any, res: any) => {
+router.put('/users/update', auth, async (req: any, res: any) => {
     const user = req.user;
     const updates = Object.keys(req.body);
     const allowedUpdates = ['NAME', 'EMAIL', 'PASSWORD'];

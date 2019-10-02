@@ -21,7 +21,7 @@ const auth = require('../middleware/auth');
 const subjectDto = require('../dto/subject_dto');
 router.get('/subjects', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -43,7 +43,7 @@ router.get('/subjects', auth, (req, res) => __awaiter(void 0, void 0, void 0, fu
 }));
 router.post('/subjects', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -64,7 +64,7 @@ router.post('/subjects', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
 }));
 router.post('/subjects-bulk', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -86,7 +86,7 @@ router.post('/subjects-bulk', auth, (req, res) => __awaiter(void 0, void 0, void
 }));
 router.delete('/subjects/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -111,7 +111,7 @@ router.delete('/subjects/:id', auth, (req, res) => __awaiter(void 0, void 0, voi
         res.status(400).send(e);
     }
 }));
-router.patch('/subjects/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/subjects/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['NAME'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -119,7 +119,7 @@ router.patch('/subjects/:id', auth, (req, res) => __awaiter(void 0, void 0, void
         return res.status(400).json({ ERROR: 'Invalid updates!' });
     }
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({

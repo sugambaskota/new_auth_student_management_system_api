@@ -91,7 +91,7 @@ router.delete('/users/remove', auth, (req, res) => __awaiter(void 0, void 0, voi
         res.status(408).send();
     }
 }));
-router.patch('/users/update', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/users/update', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const updates = Object.keys(req.body);
     const allowedUpdates = ['NAME', 'EMAIL', 'PASSWORD'];

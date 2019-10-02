@@ -1,16 +1,19 @@
 import express from 'express';
 import moment from 'moment';
+import Sequelize from 'sequelize';
 import { Model } from 'sequelize/types';
+import { any } from 'bluebird';
 const router = express.Router();
 const UserLoginInfo = require('../models/user_login_info_model');
 const Marks = require('../models/marks_model');
 const auth = require('../middleware/auth');
 const marksDto = require('../dto/marks_dto');
 const sequelize = require('../db/sequelize');
+const Op = Sequelize.Op;
 
 router.get('/marks', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -36,7 +39,7 @@ router.get('/marks', auth, async (req: any, res: any) => {
 
 router.get('/marks-all', auth, async (req: any, res: any) => {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -46,7 +49,30 @@ router.get('/marks-all', auth, async (req: any, res: any) => {
                 uuid: req.token
             }
         });
-        let marks = await Marks.findAll();
+        let options: any = {
+            where: {},
+        };
+        if(req.query.limit) {
+            options.limit = parseInt(req.query.limit);
+        }
+        if(req.query.offset) {
+            options.offset = parseInt(req.query.offset);
+        }
+        if(req.query.studentId) {
+            options.where.studentId = req.query.studentId;
+        }
+        if(req.query.teacherId) {
+            options.where.teacherId = req.query.teacherId;
+        }
+        if(req.query.subjectId) {
+            options.where.subjectId = req.query.subjectId;
+        }
+        if(req.query.gt) {
+            options.where.marks = {
+               [Op.gt]: parseInt(req.query.gt)
+            };
+        }
+        let marks = await Marks.findAll(options);
         for (let i = 0; i < marks.length; i++) {
             marks[i] = marksDto.marksOut(marks[i]);
         }
@@ -58,7 +84,7 @@ router.get('/marks-all', auth, async (req: any, res: any) => {
 
 router.post('/marks', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -79,7 +105,7 @@ router.post('/marks', auth, async (req: any, res: any) => {
 
 router.post('/marks-bulk', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -102,7 +128,7 @@ router.post('/marks-bulk', auth, async (req: any, res: any) => {
 
 router.delete('/marks/:id', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -127,7 +153,7 @@ router.delete('/marks/:id', auth, async (req: any, res: any) => {
     }
 });
 
-router.patch('/marks/:id', auth, async (req: any, res: any) => {
+router.put('/marks/:id', auth, async (req: any, res: any) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['MARKS'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -135,7 +161,7 @@ router.patch('/marks/:id', auth, async (req: any, res: any) => {
         return res.status(400).json({ ERROR: 'Invalid updates!' });
     }
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({

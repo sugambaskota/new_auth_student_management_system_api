@@ -43,8 +43,6 @@ module.exports = {
                 },
                 attributes: ['name']
             });
-            // const SUBJECT = await sequelize.query(`SELECT name FROM subjects WHERE uuid::text='${marks.subjectId}';`);
-            // const TEACHER_NAME = await sequelize.query(`SELECT name FROM users WHERE uuid::text='${marks.teacherId}';`);
             return {
                 "SUBJECT": subject.name,
                 "MARKS": marks.marks,

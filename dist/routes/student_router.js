@@ -21,7 +21,7 @@ const auth = require('../middleware/auth');
 const userDto = require('../dto/user_dto');
 router.get('/students', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -47,7 +47,7 @@ router.get('/students', auth, (req, res) => __awaiter(void 0, void 0, void 0, fu
 }));
 router.delete('/students/remove/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({

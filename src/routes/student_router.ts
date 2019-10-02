@@ -8,7 +8,7 @@ const userDto = require('../dto/user_dto');
 
 router.get('/students', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -34,7 +34,7 @@ router.get('/students', auth, async (req: any, res: any) => {
 
 router.delete('/students/remove/:id', auth, async (req: any, res: any) => {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({

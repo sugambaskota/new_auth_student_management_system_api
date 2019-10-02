@@ -9,7 +9,7 @@ const subjectDto = require('../dto/subject_dto');
 
 router.get('/subjects', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -31,7 +31,7 @@ router.get('/subjects', auth, async (req: any, res: any) => {
 
 router.post('/subjects', auth, async (req: any, res: any) => {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -52,7 +52,7 @@ router.post('/subjects', auth, async (req: any, res: any) => {
 
 router.post('/subjects-bulk', auth, async (req: any, res: any) => {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -74,7 +74,7 @@ router.post('/subjects-bulk', auth, async (req: any, res: any) => {
 
 router.delete('/subjects/:id', auth, async (req: any, res: any) => {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({
@@ -99,7 +99,7 @@ router.delete('/subjects/:id', auth, async (req: any, res: any) => {
     }
 });
 
-router.patch('/subjects/:id', auth, async (req: any, res: any) => {
+router.put('/subjects/:id', auth, async (req: any, res: any) => {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['NAME'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -107,7 +107,7 @@ router.patch('/subjects/:id', auth, async (req: any, res: any) => {
         return res.status(400).json({ ERROR: 'Invalid updates!' });
     }
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         await UserLoginInfo.update({

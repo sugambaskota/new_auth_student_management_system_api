@@ -14,15 +14,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const moment_1 = __importDefault(require("moment"));
+const sequelize_1 = __importDefault(require("sequelize"));
 const router = express_1.default.Router();
 const UserLoginInfo = require('../models/user_login_info_model');
 const Marks = require('../models/marks_model');
 const auth = require('../middleware/auth');
 const marksDto = require('../dto/marks_dto');
 const sequelize = require('../db/sequelize');
+const Op = sequelize_1.default.Op;
 router.get('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -48,7 +50,7 @@ router.get('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, funct
 }));
 router.get('/marks-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'admin') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -58,7 +60,30 @@ router.get('/marks-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
                 uuid: req.token
             }
         });
-        let marks = yield Marks.findAll();
+        let options = {
+            where: {},
+        };
+        if (req.query.limit) {
+            options.limit = parseInt(req.query.limit);
+        }
+        if (req.query.offset) {
+            options.offset = parseInt(req.query.offset);
+        }
+        if (req.query.studentId) {
+            options.where.studentId = req.query.studentId;
+        }
+        if (req.query.teacherId) {
+            options.where.teacherId = req.query.teacherId;
+        }
+        if (req.query.subjectId) {
+            options.where.subjectId = req.query.subjectId;
+        }
+        if (req.query.gt) {
+            options.where.marks = {
+                [Op.gt]: parseInt(req.query.gt)
+            };
+        }
+        let marks = yield Marks.findAll(options);
         for (let i = 0; i < marks.length; i++) {
             marks[i] = marksDto.marksOut(marks[i]);
         }
@@ -70,7 +95,7 @@ router.get('/marks-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
 }));
 router.post('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -91,7 +116,7 @@ router.post('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, func
 }));
 router.post('/marks-bulk', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -114,7 +139,7 @@ router.post('/marks-bulk', auth, (req, res) => __awaiter(void 0, void 0, void 0,
 }));
 router.delete('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
@@ -139,7 +164,7 @@ router.delete('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0
         res.status(400).send();
     }
 }));
-router.patch('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['MARKS'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -147,7 +172,7 @@ router.patch('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0,
         return res.status(400).json({ ERROR: 'Invalid updates!' });
     }
     if (req.user.role == 'student') {
-        return res.status(401).send();
+        return res.status(403).send();
     }
     try {
         yield UserLoginInfo.update({
