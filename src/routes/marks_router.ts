@@ -49,28 +49,36 @@ router.get('/marks-all', auth, async (req: any, res: any) => {
                 uuid: req.token
             }
         });
-        let options: any = {
-            where: {},
-        };
-        if(req.query.limit) {
+        let options: any = {};
+        let optionsWhere: any = {};
+        let whereMarks: any = {};
+        if (req.query.limit) {
             options.limit = parseInt(req.query.limit);
         }
-        if(req.query.offset) {
+        if (req.query.offset) {
             options.offset = parseInt(req.query.offset);
         }
-        if(req.query.studentId) {
-            options.where.studentId = req.query.studentId;
+        if (req.query.studentId) {
+            optionsWhere.studentId = req.query.studentId;
+            options.where = optionsWhere;
         }
-        if(req.query.teacherId) {
-            options.where.teacherId = req.query.teacherId;
+        if (req.query.teacherId) {
+            optionsWhere.teacherId = req.query.teacherId;
+            options.where = optionsWhere;
         }
-        if(req.query.subjectId) {
-            options.where.subjectId = req.query.subjectId;
+        if (req.query.subjectId) {
+            optionsWhere.subjectId = req.query.subjectId;
+            options.where = optionsWhere;
         }
-        if(req.query.gt) {
-            options.where.marks = {
-               [Op.gt]: parseInt(req.query.gt)
-            };
+        // if (req.query.gt) {
+        //     whereMarks["[Op.gt]"] =  parseInt(req.query.gt);
+        //     options.where = optionsWhere;
+        //     options.where.marks = whereMarks;
+        //}
+        if (req.query.lt) {
+            whereMarks[`[Op.lt]`] =  parseInt(req.query.gt);
+            options.where = optionsWhere;
+            options.where.marks = whereMarks;
         }
         let marks = await Marks.findAll(options);
         for (let i = 0; i < marks.length; i++) {
