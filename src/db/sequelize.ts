@@ -1,6 +1,6 @@
 import { Sequelize } from 'sequelize';
 
-const sequelize = new Sequelize(`${process.env.DB_URL}`);
+const sequelize = new Sequelize(`${process.env.dbURI}`);
 
 sequelize
   .authenticate()
@@ -10,7 +10,5 @@ sequelize
   .catch((err: any) => {
     console.error('Unable to connect to the database:', err);
   });
-
-  sequelize.sync();
 
 module.exports = sequelize;

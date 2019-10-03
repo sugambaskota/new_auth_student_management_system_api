@@ -49,45 +49,67 @@ router.get('/marks-all', auth, async (req: any, res: any) => {
                 uuid: req.token
             }
         });
+
         let options: any = {};
         let optionsWhere: any = {};
-        let whereMarks: any = {};
+
         if (req.query.limit) {
             options.limit = parseInt(req.query.limit);
         }
+
         if (req.query.offset) {
             options.offset = parseInt(req.query.offset);
         }
+
         if (req.query.studentId) {
             optionsWhere.studentId = req.query.studentId;
             options.where = optionsWhere;
         }
+
         if (req.query.teacherId) {
             optionsWhere.teacherId = req.query.teacherId;
             options.where = optionsWhere;
         }
+
         if (req.query.subjectId) {
             optionsWhere.subjectId = req.query.subjectId;
             options.where = optionsWhere;
         }
-        // if (req.query.gt) {
-        //     whereMarks["[Op.gt]"] =  parseInt(req.query.gt);
-        //     options.where = optionsWhere;
-        //     options.where.marks = whereMarks;
-        //}
-        if (req.query.lt) {
-            whereMarks[`[Op.lt]`] =  parseInt(req.query.gt);
+
+        if (req.query.gt && req.query.lt) {
+            optionsWhere.marks = {
+                [Op.gt]: parseInt(req.query.gt),
+                [Op.lt]: parseInt(req.query.lt),
+            }
             options.where = optionsWhere;
-            options.where.marks = whereMarks;
+        } else if (req.query.gt) {
+            optionsWhere.marks = {
+                [Op.gt]: parseInt(req.query.gt)
+            }
+            options.where = optionsWhere;
+        } else if (req.query.lt) {
+            optionsWhere.marks = {
+                [Op.lt]: parseInt(req.query.lt)
+            }
+            options.where = optionsWhere;
         }
+
         let marks = await Marks.findAll(options);
         for (let i = 0; i < marks.length; i++) {
             marks[i] = marksDto.marksOut(marks[i]);
         }
+
         res.status(200).json(marks);
+
     } catch (e) {
         res.status(500).send();
     }
+    // try{
+    //     let result = await sequelize.query('SELECT get_marksheet();');
+    // res.json(result);
+    // } catch (e) {
+    //     res.send(e);
+    // }
 });
 
 router.post('/marks', auth, async (req: any, res: any) => {

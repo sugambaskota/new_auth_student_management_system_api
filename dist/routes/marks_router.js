@@ -52,53 +52,65 @@ router.get('/marks-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
     if (req.user.role != 'admin') {
         return res.status(403).send();
     }
+    // try {
+    //     await UserLoginInfo.update({
+    //         expiresAt: moment().add('2', 'hours')
+    //     }, {
+    //         where: {
+    //             uuid: req.token
+    //         }
+    //     });
+    //     let options: any = {};
+    //     let optionsWhere: any = {};
+    //     if (req.query.limit) {
+    //         options.limit = parseInt(req.query.limit);
+    //     }
+    //     if (req.query.offset) {
+    //         options.offset = parseInt(req.query.offset);
+    //     }
+    //     if (req.query.studentId) {
+    //         optionsWhere.studentId = req.query.studentId;
+    //         options.where = optionsWhere;
+    //     }
+    //     if (req.query.teacherId) {
+    //         optionsWhere.teacherId = req.query.teacherId;
+    //         options.where = optionsWhere;
+    //     }
+    //     if (req.query.subjectId) {
+    //         optionsWhere.subjectId = req.query.subjectId;
+    //         options.where = optionsWhere;
+    //     }
+    //     if (req.query.gt && req.query.lt) {
+    //         optionsWhere.marks = {
+    //             [Op.gt]: parseInt(req.query.gt),
+    //             [Op.lt]: parseInt(req.query.lt),
+    //         }
+    //         options.where = optionsWhere;
+    //     } else if (req.query.gt) {
+    //         optionsWhere.marks = {
+    //             [Op.gt]: parseInt(req.query.gt)
+    //         }
+    //         options.where = optionsWhere;
+    //     } else if (req.query.lt) {
+    //         optionsWhere.marks = {
+    //             [Op.lt]: parseInt(req.query.lt)
+    //         }
+    //         options.where = optionsWhere;
+    //     }
+    //     let marks = await Marks.findAll(options);
+    //     for (let i = 0; i < marks.length; i++) {
+    //         marks[i] = marksDto.marksOut(marks[i]);
+    //     }
+    //     res.status(200).json(marks);
+    // } catch (e) {
+    //     res.status(500).send();
+    // }
     try {
-        yield UserLoginInfo.update({
-            expiresAt: moment_1.default().add('2', 'hours')
-        }, {
-            where: {
-                uuid: req.token
-            }
-        });
-        let options = {};
-        let optionsWhere = {};
-        let whereMarks = {};
-        if (req.query.limit) {
-            options.limit = parseInt(req.query.limit);
-        }
-        if (req.query.offset) {
-            options.offset = parseInt(req.query.offset);
-        }
-        if (req.query.studentId) {
-            optionsWhere.studentId = req.query.studentId;
-            options.where = optionsWhere;
-        }
-        if (req.query.teacherId) {
-            optionsWhere.teacherId = req.query.teacherId;
-            options.where = optionsWhere;
-        }
-        if (req.query.subjectId) {
-            optionsWhere.subjectId = req.query.subjectId;
-            options.where = optionsWhere;
-        }
-        if (req.query.gt) {
-            whereMarks["[Op.gt]"] = parseInt(req.query.gt);
-            options.where = optionsWhere;
-            options.where.marks = whereMarks;
-        }
-        if (req.query.lt) {
-            whereMarks[`[Op.lt]`] = parseInt(req.query.gt);
-            options.where = optionsWhere;
-            options.where.marks = whereMarks;
-        }
-        let marks = yield Marks.findAll(options);
-        for (let i = 0; i < marks.length; i++) {
-            marks[i] = marksDto.marksOut(marks[i]);
-        }
-        res.status(200).json(marks);
+        let result = yield sequelize.query('CALL get_marksheet();');
+        res.json(result);
     }
     catch (e) {
-        res.status(500).send();
+        res.send(e);
     }
 }));
 router.post('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
