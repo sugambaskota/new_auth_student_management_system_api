@@ -53,12 +53,11 @@ router.get('/marks-all', auth, async (req: any, res: any) => {
         let options: any = {};
         let optionsWhere: any = {};
 
-        if (req.query.limit) {
+        if (req.query.limit && req.query.page) {
             options.limit = parseInt(req.query.limit);
-        }
-
-        if (req.query.offset) {
-            options.offset = parseInt(req.query.offset);
+            options.offset = parseInt(req.query.limit) * (parseInt(req.query.page) - 1);
+        } else if (req.query.limit) {
+            options.limit = parseInt(req.query.limit);
         }
 
         if (req.query.studentId) {
@@ -104,12 +103,6 @@ router.get('/marks-all', auth, async (req: any, res: any) => {
     } catch (e) {
         res.status(500).send();
     }
-    // try{
-    //     let result = await sequelize.query('SELECT get_marksheet();');
-    // res.json(result);
-    // } catch (e) {
-    //     res.send(e);
-    // }
 });
 
 router.post('/marks', auth, async (req: any, res: any) => {

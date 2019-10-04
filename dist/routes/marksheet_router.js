@@ -21,6 +21,7 @@ const User = require('../models/user_model');
 const Subject = require('../models/subject_model');
 const auth = require('../middleware/auth');
 const marksDto = require('../dto/marks_dto');
+const marksheetCaller = require('../repository/get_marksheet_caller');
 router.get('/marksheet', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'student') {
         return res.status(403).send();
@@ -67,19 +68,59 @@ router.get('/marksheet/:id', auth, (req, res) => __awaiter(void 0, void 0, void 
         for (let i = 0; i < marks.length; i++) {
             marks[i] = yield marksDto.marksheetOut(marks[i]);
         }
-        // const marks = await Marks.findAll({
-        //     where: {
-        //         studentId: req.params.id
-        //     },
-        //     include: [{
-        //         model: User,
-        //         required: false,
-        //         on: {
-        //             uuid: Sequelize.col('teacherId')
-        //         }
-        //     }]
-        // });        
         res.status(200).json(marks);
+    }
+    catch (e) {
+        res.status(500).send();
+    }
+}));
+router.get('/marksheet-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    if (req.user.role != 'admin') {
+        return res.status(403).send();
+    }
+    try {
+        yield UserLoginInfo.update({
+            expiresAt: moment_1.default().add('2', 'hours')
+        }, {
+            where: {
+                uuid: req.token
+            }
+        });
+        let options = {};
+        if (req.query.limit && req.query.page) {
+            options.LIMIT = parseInt(req.query.limit);
+            options.OFFSET = parseInt(req.query.limit) * (parseInt(req.query.page) - 1);
+        }
+        else if (req.query.limit) {
+            options.LIMIT = parseInt(req.query.limit);
+        }
+        if (req.query.studentId) {
+            options.STUDENT_ID = req.query.studentId;
+        }
+        if (req.query.teacherId) {
+            options.TEACHER_ID = req.query.teacherId;
+        }
+        if (req.query.subjectId) {
+            options.SUBJECT_ID = req.query.subjectId;
+        }
+        if (req.query.gt && req.query.lt) {
+            options.MARKS = {
+                GT: parseInt(req.query.gt),
+                LT: parseInt(req.query.lt),
+            };
+        }
+        else if (req.query.gt) {
+            options.MARKS = {
+                GT: parseInt(req.query.gt)
+            };
+        }
+        else if (req.query.lt) {
+            options.MARKS = {
+                LT: parseInt(req.query.lt)
+            };
+        }
+        let result = yield marksheetCaller.get_marksheet_caller(options);
+        res.json(result);
     }
     catch (e) {
         res.status(500).send();

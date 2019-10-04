@@ -1,0 +1,1 @@
+{"version":3,"file":"get_marksheet_caller.js","sourceRoot":"","sources":["../../src/repository/get_marksheet_caller.ts"],"names":[],"mappings":";;;;;;;;;;AAAA,MAAM,SAAS,GAAG,OAAO,CAAC,iBAAiB,CAAC,CAAC;AAE7C,MAAM,CAAC,OAAO,GAAG;IACb,oBAAoB,EAAE,UAAe,OAAe;;YAChD,IAAI,MAAM,GAAG,MAAM,SAAS,CAAC,KAAK,CAAC,gCAAgC,CAAC,CAAC;YACrE,OAAO,MAAM,CAAC;QAClB,CAAC;KAAA;CACJ,CAAA"}

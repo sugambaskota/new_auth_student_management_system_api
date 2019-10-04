@@ -10,7 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 const User = require('../models/user_model');
 const Subject = require('../models/subject_model');
-const sequelize = require('../db/sequelize');
 module.exports = {
     marksIn: (marks) => {
         return {

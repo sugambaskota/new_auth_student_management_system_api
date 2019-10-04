@@ -1,6 +1,5 @@
 const User = require('../models/user_model');
 const Subject = require('../models/subject_model');
-const sequelize = require('../db/sequelize');
 module.exports = {
     marksIn: (marks: any) => {
         return {
