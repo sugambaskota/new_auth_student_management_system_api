@@ -1,8 +1,7 @@
-const moment = require('moment');
-import Sequelize from 'sequelize';
-const User = require('../models/user_model');
-const UserLoginInfo = require('../models/user_login_info_model');
-const Op = Sequelize.Op;
+import moment from 'moment';
+import { Op } from 'sequelize';
+import { User } from '../models/user_model';
+import { UserLoginInfo } from '../models/user_login_info_model';
 
 const auth = async (req: any, res: any, next: any) => {
     try {
@@ -36,4 +35,4 @@ const auth = async (req: any, res: any, next: any) => {
     }
 }
 
-module.exports = auth;
+export { auth };

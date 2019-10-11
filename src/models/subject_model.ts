@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
-const sequelize = require('../db/sequelize');
+import { sequelize } from '../db/sequelize';
 
-const Subject = sequelize.define('subjects', {
+const Subject: any = sequelize.define('subjects', {
     id: {
         primaryKey: true,
         type: Sequelize.INTEGER,
@@ -20,4 +20,4 @@ const Subject = sequelize.define('subjects', {
     paranoid: true
 });
 
-module.exports = Subject;
+export { Subject };

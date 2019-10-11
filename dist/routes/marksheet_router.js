@@ -11,30 +11,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
 const moment_1 = __importDefault(require("moment"));
-const router = express_1.default.Router();
-const UserLoginInfo = require('../models/user_login_info_model');
-const Marks = require('../models/marks_model');
-const User = require('../models/user_model');
-const Subject = require('../models/subject_model');
-const auth = require('../middleware/auth');
-const marksDto = require('../dto/marks_dto');
-const marksheetCaller = require('../repository/get_marksheet_caller');
-router.get('/marksheet', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const express_1 = require("express");
+const user_login_info_model_1 = require("../models/user_login_info_model");
+const marks_model_1 = require("../models/marks_model");
+const auth_1 = require("../middleware/auth");
+const marksDto = __importStar(require("../dto/marks_dto"));
+const marksheetCaller = __importStar(require("../repository/get_marksheet_caller"));
+const router = express_1.Router();
+exports.router = router;
+router.get('/marksheet', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'student') {
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
                 uuid: req.token
             }
         });
-        let marks = yield Marks.findAll({
+        let marks = yield marks_model_1.Marks.findAll({
             where: {
                 studentId: req.user.uuid
             }
@@ -48,19 +54,19 @@ router.get('/marksheet', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(500).send();
     }
 }));
-router.get('/marksheet/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/marksheet/:id', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
                 uuid: req.token
             }
         });
-        const marks = yield Marks.findAll({
+        const marks = yield marks_model_1.Marks.findAll({
             where: {
                 studentId: req.params.id
             }
@@ -74,12 +80,12 @@ router.get('/marksheet/:id', auth, (req, res) => __awaiter(void 0, void 0, void 
         res.status(500).send();
     }
 }));
-router.get('/marksheet-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/marksheet-all', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'admin') {
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
@@ -126,5 +132,4 @@ router.get('/marksheet-all', auth, (req, res) => __awaiter(void 0, void 0, void 
         res.status(500).send();
     }
 }));
-module.exports = router;
 //# sourceMappingURL=marksheet_router.js.map

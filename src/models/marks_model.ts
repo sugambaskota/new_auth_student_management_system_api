@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
-const sequelize = require('../db/sequelize');
+import { sequelize } from '../db/sequelize';
 
-const Marks = sequelize.define('marks', {
+const Marks: any = sequelize.define('marks', {
     id: {
         primaryKey: true,
         type: Sequelize.INTEGER,
@@ -31,4 +31,4 @@ const Marks = sequelize.define('marks', {
     paranoid: true
 });
 
-module.exports = Marks;
+export { Marks };

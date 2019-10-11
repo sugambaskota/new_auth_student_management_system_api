@@ -1,13 +1,12 @@
-import express from 'express';
 import moment from 'moment';
-const router = express.Router();
-const UserLoginInfo = require('../models/user_login_info_model');
-const Marks = require('../models/marks_model');
-const User = require('../models/user_model');
-const Subject = require('../models/subject_model');
-const auth = require('../middleware/auth');
-const marksDto = require('../dto/marks_dto');
-const marksheetCaller = require('../repository/get_marksheet_caller');
+import { Router } from 'express';
+import { UserLoginInfo } from '../models/user_login_info_model';
+import { Marks } from '../models/marks_model';
+import { auth } from '../middleware/auth';
+import * as marksDto from '../dto/marks_dto';
+import * as marksheetCaller from '../repository/get_marksheet_caller';
+
+const router = Router();
 
 router.get('/marksheet', auth, async (req: any, res: any) => {
     if (req.user.role != 'student') {
@@ -117,4 +116,4 @@ router.get('/marksheet-all', auth, async (req: any, res: any) => {
     }
 });
 
-module.exports = router;
+export { router };

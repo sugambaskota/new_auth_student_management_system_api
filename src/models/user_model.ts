@@ -1,10 +1,10 @@
 import Sequelize from 'sequelize';
 import bcrypt from 'bcryptjs';
 import moment from 'moment';
-const sequelize = require('../db/sequelize');
-const UserLoginInfo = require('./user_login_info_model');
+import { sequelize } from '../db/sequelize';
+import { UserLoginInfo } from './user_login_info_model';
 
-const User = sequelize.define('users', {
+const User: any = sequelize.define('users', {
     id: {
         primaryKey: true,
         type: Sequelize.INTEGER,
@@ -28,8 +28,7 @@ const User = sequelize.define('users', {
     },
     password: {
         type: Sequelize.STRING,
-        allowNull: false,
-        len: [5, 20]
+        allowNull: false
     },
     role: {
         type: Sequelize.ENUM('admin', 'teacher', 'student'),
@@ -84,4 +83,4 @@ User.beforeUpdate((user: any, options: any) => {
     }
 });
 
-module.exports = User;
+export { User };

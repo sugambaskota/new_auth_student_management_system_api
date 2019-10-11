@@ -11,30 +11,37 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
 const moment_1 = __importDefault(require("moment"));
-const sequelize_1 = __importDefault(require("sequelize"));
-const router = express_1.default.Router();
-const UserLoginInfo = require('../models/user_login_info_model');
-const Marks = require('../models/marks_model');
-const auth = require('../middleware/auth');
-const marksDto = require('../dto/marks_dto');
-const sequelize = require('../db/sequelize');
-const Op = sequelize_1.default.Op;
-router.get('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+const express_1 = require("express");
+const sequelize_1 = require("sequelize");
+const user_login_info_model_1 = require("../models/user_login_info_model");
+const marks_model_1 = require("../models/marks_model");
+const auth_1 = require("../middleware/auth");
+const marksDto = __importStar(require("../dto/marks_dto"));
+const sequelize_2 = require("../db/sequelize");
+const router = express_1.Router();
+exports.router = router;
+router.get('/marks', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
                 uuid: req.token
             }
         });
-        let marks = yield Marks.findAll({
+        let marks = yield marks_model_1.Marks.findAll({
             where: {
                 teacherId: req.user.uuid
             }
@@ -48,12 +55,12 @@ router.get('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(500).send();
     }
 }));
-router.get('/marks-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/marks-all', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'admin') {
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
@@ -83,24 +90,24 @@ router.get('/marks-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
         }
         if (req.query.gt && req.query.lt) {
             optionsWhere.marks = {
-                [Op.gt]: parseInt(req.query.gt),
-                [Op.lt]: parseInt(req.query.lt),
+                [sequelize_1.Op.gt]: parseInt(req.query.gt),
+                [sequelize_1.Op.lt]: parseInt(req.query.lt),
             };
             options.where = optionsWhere;
         }
         else if (req.query.gt) {
             optionsWhere.marks = {
-                [Op.gt]: parseInt(req.query.gt)
+                [sequelize_1.Op.gt]: parseInt(req.query.gt)
             };
             options.where = optionsWhere;
         }
         else if (req.query.lt) {
             optionsWhere.marks = {
-                [Op.lt]: parseInt(req.query.lt)
+                [sequelize_1.Op.lt]: parseInt(req.query.lt)
             };
             options.where = optionsWhere;
         }
-        let marks = yield Marks.findAll(options);
+        let marks = yield marks_model_1.Marks.findAll(options);
         for (let i = 0; i < marks.length; i++) {
             marks[i] = marksDto.marksOut(marks[i]);
         }
@@ -110,12 +117,12 @@ router.get('/marks-all', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(500).send();
     }
 }));
-router.post('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/marks', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
@@ -124,19 +131,19 @@ router.post('/marks', auth, (req, res) => __awaiter(void 0, void 0, void 0, func
         });
         let toDto = marksDto.marksIn(req.body);
         toDto.teacherId = req.user.uuid;
-        yield Marks.create(toDto);
+        yield marks_model_1.Marks.create(toDto);
         res.status(201).send();
     }
     catch (e) {
         res.status(400).send();
     }
 }));
-router.post('/marks-bulk', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/marks-bulk', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
@@ -147,26 +154,26 @@ router.post('/marks-bulk', auth, (req, res) => __awaiter(void 0, void 0, void 0,
             req.body[i] = marksDto.marksIn(req.body[i]);
             req.body[i].teacherId = req.user.uuid;
         }
-        yield Marks.bulkCreate(req.body);
+        yield marks_model_1.Marks.bulkCreate(req.body);
         res.status(201).send();
     }
     catch (e) {
         res.status(400).send(e);
     }
 }));
-router.delete('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete('/marks/:id', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
                 uuid: req.token
             }
         });
-        let marksOne = yield Marks.findOne({
+        let marksOne = yield marks_model_1.Marks.findOne({
             where: {
                 uuid: req.params.id
             }
@@ -181,7 +188,7 @@ router.delete('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0
         res.status(400).send();
     }
 }));
-router.put('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/marks/:id', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updates = Object.keys(req.body);
     const allowedUpdates = ['MARKS'];
     const isValidOperation = updates.every((update) => allowedUpdates.includes(update));
@@ -192,14 +199,14 @@ router.put('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
         return res.status(403).send();
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
                 uuid: req.token
             }
         });
-        const marks = yield Marks.findOne({
+        const marks = yield marks_model_1.Marks.findOne({
             where: {
                 uuid: req.params.id
             }
@@ -208,7 +215,7 @@ router.put('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
             return res.sendStatus(404).send();
         }
         let toDto = marksDto.fromUpdate(req.body);
-        yield sequelize.query(`set myvar.userid="${req.user.uuid}"`);
+        yield sequelize_2.sequelize.query(`set myvar.userid="${req.user.uuid}"`);
         yield marks.update(toDto);
         res.status(202).send();
     }
@@ -216,5 +223,4 @@ router.put('/marks/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, f
         res.status(400).send(e);
     }
 }));
-module.exports = router;
 //# sourceMappingURL=marks_router.js.map

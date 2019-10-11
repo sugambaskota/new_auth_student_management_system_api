@@ -12,28 +12,27 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const moment = require('moment');
-const sequelize_1 = __importDefault(require("sequelize"));
-const User = require('../models/user_model');
-const UserLoginInfo = require('../models/user_login_info_model');
-const Op = sequelize_1.default.Op;
+const moment_1 = __importDefault(require("moment"));
+const sequelize_1 = require("sequelize");
+const user_model_1 = require("../models/user_model");
+const user_login_info_model_1 = require("../models/user_login_info_model");
 const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        let now = moment().format();
+        let now = moment_1.default().format();
         const token = req.header('Authorization').replace('Bearer ', '');
-        const userLoginInfo = yield UserLoginInfo.findOne({
+        const userLoginInfo = yield user_login_info_model_1.UserLoginInfo.findOne({
             where: {
                 uuid: token,
                 loggedOutDateTime: null,
                 expiresAt: {
-                    [Op.gt]: now
+                    [sequelize_1.Op.gt]: now
                 },
             }
         });
         if (!userLoginInfo) {
             throw new Error();
         }
-        const user = yield User.findOne({
+        const user = yield user_model_1.User.findOne({
             where: {
                 id: userLoginInfo.userId
             }
@@ -49,5 +48,5 @@ const auth = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () 
         res.status(401).json({ error: "Please authenticate!" });
     }
 });
-module.exports = auth;
+exports.auth = auth;
 //# sourceMappingURL=auth.js.map

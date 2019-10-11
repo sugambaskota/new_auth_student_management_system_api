@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
-const sequelize = require('../db/sequelize');
+import { sequelize } from '../db/sequelize';
 
-const UserLoginInfo = sequelize.define('userLoginInfos', {
+const UserLoginInfo: any = sequelize.define('userLoginInfos', {
     id: {
         primaryKey: true,
         type: Sequelize.INTEGER,
@@ -29,4 +29,4 @@ const UserLoginInfo = sequelize.define('userLoginInfos', {
     paranoid: true
 });
 
-module.exports = UserLoginInfo;
+export { UserLoginInfo };

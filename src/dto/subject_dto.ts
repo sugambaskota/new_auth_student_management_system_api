@@ -1,13 +1,17 @@
-module.exports = {
-    subjectIn: (subject: any) => {
-        return {
-            "name": subject.NAME
-        }
-    },
-    subjectOut: (subject: any) => {
-        return {
-            "UUID": subject.uuid,
-            "NAME": subject.name
-        }
+let subjectIn: any = (subject: any) => {
+    return {
+        "name": subject.NAME
     }
 }
+
+let subjectOut: any = (subject: any) => {
+    return {
+        "UUID": subject.uuid,
+        "NAME": subject.name
+    }
+}
+
+export {
+    subjectIn,
+    subjectOut
+};

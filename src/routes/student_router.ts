@@ -1,10 +1,11 @@
-import express from 'express';
+import { Router } from 'express';
 import moment from 'moment';
-const router = express.Router();
-const UserLoginInfo = require('../models/user_login_info_model');
-const Users = require('../models/user_model');
-const auth = require('../middleware/auth');
-const userDto = require('../dto/user_dto');
+import { UserLoginInfo } from '../models/user_login_info_model';
+import { User } from '../models/user_model';
+import { auth } from '../middleware/auth';
+import * as userDto from '../dto/user_dto';
+
+const router = Router();
 
 router.get('/students', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
@@ -18,7 +19,7 @@ router.get('/students', auth, async (req: any, res: any) => {
                 uuid: req.token
             }
         });
-        let students = await Users.findAll({
+        let students = await User.findAll({
             where: {
                 role: 'student'
             }
@@ -44,7 +45,7 @@ router.delete('/students/remove/:id', auth, async (req: any, res: any) => {
                 uuid: req.token
             }
         });
-        const student = await Users.findOne({
+        const student = await User.findOne({
             where: {
                 uuid: req.params.id
             }
@@ -56,4 +57,4 @@ router.delete('/students/remove/:id', auth, async (req: any, res: any) => {
     }
 });
 
-module.exports = router;
+export { router }

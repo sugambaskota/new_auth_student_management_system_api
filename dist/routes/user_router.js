@@ -11,18 +11,26 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const express_1 = __importDefault(require("express"));
+const express_1 = require("express");
 const moment_1 = __importDefault(require("moment"));
-const router = express_1.default.Router();
-const User = require('../models/user_model');
-const auth = require('../middleware/auth');
-const UserDto = require('../dto/user_dto');
-const UserLoginInfo = require('../models/user_login_info_model');
+const user_model_1 = require("../models/user_model");
+const auth_1 = require("../middleware/auth");
+const UserDto = __importStar(require("../dto/user_dto"));
+const user_login_info_model_1 = require("../models/user_login_info_model");
+const router = express_1.Router();
+exports.router = router;
 router.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let toDto = UserDto.userIn(req.body);
-        let user = yield User.create(toDto);
+        let user = yield user_model_1.User.create(toDto);
         let fromDto = UserDto.userOut(user);
         let token = yield user.generateAuthToken();
         res.status(201).json({
@@ -37,7 +45,7 @@ router.post('/users', (req, res) => __awaiter(void 0, void 0, void 0, function* 
 router.post('/users/login', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let toDto = UserDto.fromLogin(req.body);
-        const user = yield User.findByCredentials(toDto.email, toDto.password);
+        const user = yield user_model_1.User.findByCredentials(toDto.email, toDto.password);
         let fromDto = UserDto.userOut(user);
         const token = yield user.generateAuthToken();
         res.json({
@@ -49,10 +57,10 @@ router.post('/users/login', (req, res) => __awaiter(void 0, void 0, void 0, func
         res.status(404).send();
     }
 }));
-router.post('/users/logout', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.post('/users/logout', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const now = moment_1.default().format();
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             loggedOutDateTime: now
         }, {
             where: {
@@ -65,10 +73,10 @@ router.post('/users/logout', auth, (req, res) => __awaiter(void 0, void 0, void 
         res.status(404).send();
     }
 }));
-router.get('/users/profile', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/users/profile', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const fromDto = UserDto.userOut(req.user);
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
@@ -81,7 +89,7 @@ router.get('/users/profile', auth, (req, res) => __awaiter(void 0, void 0, void 
         res.status(408).send();
     }
 }));
-router.delete('/users/remove', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete('/users/remove', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const user = req.user;
         yield user.destroy();
@@ -91,7 +99,7 @@ router.delete('/users/remove', auth, (req, res) => __awaiter(void 0, void 0, voi
         res.status(408).send();
     }
 }));
-router.put('/users/update', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.put('/users/update', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = req.user;
     const updates = Object.keys(req.body);
     const allowedUpdates = ['NAME', 'EMAIL', 'PASSWORD'];
@@ -100,7 +108,7 @@ router.put('/users/update', auth, (req, res) => __awaiter(void 0, void 0, void 0
         return res.status(400).json({ ERROR: 'Invalid updates!' });
     }
     try {
-        yield UserLoginInfo.update({
+        yield user_login_info_model_1.UserLoginInfo.update({
             expiresAt: moment_1.default().add('2', 'hours')
         }, {
             where: {
@@ -116,5 +124,4 @@ router.put('/users/update', auth, (req, res) => __awaiter(void 0, void 0, void 0
         res.status(408).send();
     }
 }));
-module.exports = router;
 //# sourceMappingURL=user_router.js.map

@@ -8,13 +8,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-const sequelize = require('../db/sequelize');
-module.exports = {
-    get_marksheet_caller: function (options) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let result = yield sequelize.query(`SELECT * from get_marksheet();`);
-            return result;
-        });
-    }
+Object.defineProperty(exports, "__esModule", { value: true });
+const sequelize_1 = require("../db/sequelize");
+let get_marksheet_caller = function (options) {
+    return __awaiter(this, void 0, void 0, function* () {
+        let result = yield sequelize_1.sequelize.query(`SELECT * from get_marksheet();`);
+        return result;
+    });
 };
+exports.get_marksheet_caller = get_marksheet_caller;
 //# sourceMappingURL=get_marksheet_caller.js.map

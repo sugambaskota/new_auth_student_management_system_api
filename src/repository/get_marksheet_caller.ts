@@ -1,8 +1,11 @@
-const sequelize = require('../db/sequelize');
+import Sequelize from 'sequelize';
+import { sequelize } from '../db/sequelize';
 
-module.exports = {
-    get_marksheet_caller: async function(options: object) {
-        let result = await sequelize.query(`SELECT * from get_marksheet();`);
-        return result;
-    }
+let get_marksheet_caller: any = async function (options: object) {
+    let result = await sequelize.query(`SELECT * from get_marksheet();`, {
+        type: Sequelize.QueryTypes.SELECT
+    });
+    return result;
 }
+
+export { get_marksheet_caller }

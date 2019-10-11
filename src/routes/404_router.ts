@@ -1,10 +1,11 @@
-import express from 'express';
-const router = express.Router();
+import { Router } from 'express';
 
-router.use('/*', (req, res) => {
+const router: any = Router();
+
+router.use('/*', (req: any, res: any) => {
     res.status(404).json({
         "SORRY": " ☹ "
     });
 });
 
-module.exports = router;
+export { router };

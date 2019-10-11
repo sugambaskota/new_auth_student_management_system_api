@@ -1,15 +1,14 @@
-import express from 'express';
 import moment from 'moment';
-import Sequelize from 'sequelize';
+import { Router } from 'express';
+import { Op } from 'sequelize';
 import { Model } from 'sequelize/types';
-import { any } from 'bluebird';
-const router = express.Router();
-const UserLoginInfo = require('../models/user_login_info_model');
-const Marks = require('../models/marks_model');
-const auth = require('../middleware/auth');
-const marksDto = require('../dto/marks_dto');
-const sequelize = require('../db/sequelize');
-const Op = Sequelize.Op;
+import { UserLoginInfo } from '../models/user_login_info_model';
+import { Marks } from '../models/marks_model';
+import { auth } from '../middleware/auth';
+import * as marksDto from '../dto/marks_dto';
+import { sequelize } from '../db/sequelize';
+
+const router: any = Router();
 
 router.get('/marks', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
@@ -211,4 +210,4 @@ router.put('/marks/:id', auth, async (req: any, res: any) => {
     }
 });
 
-module.exports = router;
+export { router };

@@ -1,11 +1,12 @@
-import express from 'express';
+import { Router } from 'express';
 import moment from 'moment';
 import { Model } from 'sequelize/types';
-const router = express.Router();
-const Subject = require('../models/subject_model');
-const UserLoginInfo = require('../models/user_login_info_model');
-const auth = require('../middleware/auth');
-const subjectDto = require('../dto/subject_dto');
+import { Subject } from '../models/subject_model';
+import { UserLoginInfo } from '../models/user_login_info_model';
+import { auth } from '../middleware/auth';
+import * as subjectDto from '../dto/subject_dto';
+
+const router = Router();
 
 router.get('/subjects', auth, async (req: any, res: any) => {
     if (req.user.role == 'student') {
@@ -133,4 +134,4 @@ router.put('/subjects/:id', auth, async (req: any, res: any) => {
     }
 });
 
-module.exports = router;
+export { router };

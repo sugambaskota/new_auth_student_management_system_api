@@ -1,10 +1,11 @@
-import express from 'express';
+import { Router } from 'express';
 import moment from 'moment';
-const router = express.Router();
-const User = require('../models/user_model');
-const auth = require('../middleware/auth');
-const UserDto = require('../dto/user_dto');
-const UserLoginInfo = require('../models/user_login_info_model');
+import { User } from '../models/user_model';
+import { auth } from '../middleware/auth';
+import * as UserDto from '../dto/user_dto';
+import { UserLoginInfo } from '../models/user_login_info_model';
+
+const router = Router();
 
 router.post('/users', async (req: any, res: any) => {
     try {
@@ -103,4 +104,4 @@ router.put('/users/update', auth, async (req: any, res: any) => {
     }
 });
 
-module.exports = router;
+export { router };

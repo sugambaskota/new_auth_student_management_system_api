@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = __importDefault(require("sequelize"));
-const sequelize = require('../db/sequelize');
-const UserLoginInfo = sequelize.define('userLoginInfos', {
+const sequelize_2 = require("../db/sequelize");
+const UserLoginInfo = sequelize_2.sequelize.define('userLoginInfos', {
     id: {
         primaryKey: true,
         type: sequelize_1.default.INTEGER,
@@ -32,5 +32,5 @@ const UserLoginInfo = sequelize.define('userLoginInfos', {
     timestamps: true,
     paranoid: true
 });
-module.exports = UserLoginInfo;
+exports.UserLoginInfo = UserLoginInfo;
 //# sourceMappingURL=user_login_info_model.js.map

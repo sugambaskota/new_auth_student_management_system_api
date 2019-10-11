@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = __importDefault(require("sequelize"));
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const moment_1 = __importDefault(require("moment"));
-const sequelize = require('../db/sequelize');
-const UserLoginInfo = require('./user_login_info_model');
-const User = sequelize.define('users', {
+const sequelize_2 = require("../db/sequelize");
+const user_login_info_model_1 = require("./user_login_info_model");
+const User = sequelize_2.sequelize.define('users', {
     id: {
         primaryKey: true,
         type: sequelize_1.default.INTEGER,
@@ -41,8 +41,7 @@ const User = sequelize.define('users', {
     },
     password: {
         type: sequelize_1.default.STRING,
-        allowNull: false,
-        len: [5, 20]
+        allowNull: false
     },
     role: {
         type: sequelize_1.default.ENUM('admin', 'teacher', 'student'),
@@ -52,6 +51,7 @@ const User = sequelize.define('users', {
     timestamps: true,
     paranoid: true
 });
+exports.User = User;
 User.findByCredentials = (email, password) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield User.findOne({
         where: {
@@ -71,7 +71,7 @@ User.prototype.generateAuthToken = function () {
     return __awaiter(this, void 0, void 0, function* () {
         const user = this;
         const now = moment_1.default().format();
-        const userLoginInfo = yield UserLoginInfo.create({
+        const userLoginInfo = yield user_login_info_model_1.UserLoginInfo.create({
             userId: user.id,
             loggedInDateTime: now,
             expiresAt: moment_1.default().add('2', 'hours')
@@ -94,5 +94,4 @@ User.beforeUpdate((user, options) => {
         return null;
     }
 });
-module.exports = User;
 //# sourceMappingURL=user_model.js.map
