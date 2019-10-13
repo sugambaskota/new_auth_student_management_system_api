@@ -11,16 +11,23 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (Object.hasOwnProperty.call(mod, k)) result[k] = mod[k];
+    result["default"] = mod;
+    return result;
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const moment_1 = __importDefault(require("moment"));
 const user_login_info_model_1 = require("../models/user_login_info_model");
 const user_model_1 = require("../models/user_model");
-const auth = require('../middleware/auth');
-const userDto = require('../dto/user_dto');
+const auth_1 = require("../middleware/auth");
+const userDto = __importStar(require("../dto/user_dto"));
 const router = express_1.Router();
 exports.router = router;
-router.get('/students', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.get('/students', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role == 'student') {
         return res.status(403).send();
     }
@@ -46,7 +53,7 @@ router.get('/students', auth, (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).send();
     }
 }));
-router.delete('/students/remove/:id', auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+router.delete('/students/remove/:id', auth_1.auth, (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (req.user.role != 'admin') {
         return res.status(403).send();
     }

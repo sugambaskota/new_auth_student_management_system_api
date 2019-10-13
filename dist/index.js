@@ -11,6 +11,9 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
+dotenv_1.default.config({
+    path: __dirname + '/../config/dev.env'
+});
 const express_1 = __importDefault(require("express"));
 const subjectRouter = __importStar(require("./routes/subject_router"));
 const userRouter = __importStar(require("./routes/user_router"));
@@ -18,9 +21,6 @@ const marksRouter = __importStar(require("./routes/marks_router"));
 const marksheetRouter = __importStar(require("./routes/marksheet_router"));
 const studentRouter = __importStar(require("./routes/student_router"));
 const notFoundRouter = __importStar(require("./routes/404_router"));
-dotenv_1.default.config({
-    path: __dirname + '/../config/dev.env'
-});
 //Connect to Postgres database
 require("./db/sequelize");
 //Initializing app variable
