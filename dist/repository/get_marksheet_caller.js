@@ -14,21 +14,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const sequelize_1 = __importDefault(require("sequelize"));
 const sequelize_2 = require("../db/sequelize");
-function myFunction(item, index, arr) {
-    let y = item.split('=>');
-    y[0] = y[0].replace(/[']/g, '');
-    arr[index] = y.join('=>');
-}
 let get_marksheet_caller = function (options) {
     return __awaiter(this, void 0, void 0, function* () {
-        let optionsSt = JSON.stringify(options);
-        let reSt = optionsSt.replace(/[{}]/g, '').replace(/["]/g, '\'').replace(/[:]/g, '=>');
-        let spSt = reSt.split(',');
-        spSt.forEach(myFunction);
-        let parsedSt = spSt.join(',');
-        let result = yield sequelize_2.sequelize.query(`SELECT * from get_marksheet(
-        ${parsedSt}
-    );`, {
+        let optionsArray = Object.keys(options);
+        let sql = 'SELECT * FROM get_marksheet(';
+        for (let i = 0; i < optionsArray.length; i++) {
+            sql = (i == (optionsArray.length - 1) ? sql + ':' + optionsArray[i] + ')' : sql + ':' + optionsArray[i] + ',');
+            // if (i == (optionsArray.length -1)) {
+            //     sql = sql + ':' + optionsArray[i] + ')';
+            // }
+            // else {
+            //     sql = sql + ':' + optionsArray[i] + ',';
+            // }
+        }
+        let result = yield sequelize_2.sequelize.query(sql, {
+            replacements: options,
             type: sequelize_1.default.QueryTypes.SELECT
         });
         return result;

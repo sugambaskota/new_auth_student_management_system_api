@@ -73,47 +73,21 @@ router.get('/marksheet-all', auth, async (req: any, res: any) => {
             }
         });
 
-        let options: any = {};
-
-        if (req.query.LIMIT && req.query.PAGE) {
-            options.limitvalue = parseInt(req.query.LIMIT);
-            options.offsetvalue = parseInt(req.query.LIMIT) * (parseInt(req.query.PAGE) - 1);
-        } else if (req.query.LIMIT) {
-            options.limitvalue = parseInt(req.query.LIMIT);
-        }
-
-        if (req.query.STUDENT_ID) {
-            options.studentid = req.query.STUDENT_ID;
-            
-        }
-
-        if (req.query.TEACHER_ID) {
-            options.teacherid = req.query.TEACHER_ID;
-        }
-
-        if (req.query.SUBJECT_ID) {
-            options.subjectid = req.query.SUBJECT_ID;
-        }
-
-        if (req.query.GT && req.query.LT) {
-            options.marksgt = parseInt(req.query.GT);
-            options.markslt = parseInt(req.query.LT);
-        } else if (req.query.GT) {
-            options.marksgt = parseInt(req.query.GT);
-        } else if (req.query.LT) {
-            options.markslt = parseInt(req.query.LT);
-        }
-
-        if (req.query.ORDER_BY) {
-            options.orderby = req.query.ORDER_BY
-        }
-
-        if (req.query.SEARCH_TEXT) {
-            options.searchtext = req.query.SEARCH_TEXT;
-        }
+        let options: object = {
+            studentid: req.query.STUDENT_ID ? req.query.STUDENT_ID : '',
+            teacherid: req.query.TEACHER_ID ? req.query.TEACHER_ID : '',
+            subjectid: req.query.SUBJECT_ID ? req.query.SUBJECT_ID : '',
+            marksgt: req.query.GT ? req.query.GT : '',
+            markslt: req.query.LT ? req.query.LT : '',
+            orderby: req.query.ORDER_BY ? req.query.ORDER_BY : '',
+            limitvalue: req.query.LIMIT ? req.query.LIMIT : '',
+            offsetvalue: req.query.PAGE ? (parseInt(req.query.LIMIT) * (parseInt(req.query.PAGE) - 1)).toString : '',
+            searchtext: req.query.SEARCH_TEXT ? req.query.SEARCH_TEXT : '',
+        };
 
         let result = await marksheetCaller.get_marksheet_caller(options);
         res.json(result);
+        
     } catch (e) {
         res.status(500).send();
     }

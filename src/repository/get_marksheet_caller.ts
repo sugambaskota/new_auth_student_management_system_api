@@ -1,21 +1,14 @@
 import Sequelize from 'sequelize';
 import { sequelize } from '../db/sequelize';
 
-function myFunction(item: any, index: any, arr: any) {
-    let y = item.split('=>');
-    y[0] = y[0].replace(/[']/g, '');
-    arr[index] = y.join('=>');
-}
-
-let get_marksheet_caller: any = async function (options: any) {
-    let optionsSt = JSON.stringify(options);
-    let reSt = optionsSt.replace(/[{}]/g, '').replace(/["]/g, '\'').replace(/[:]/g, '=>');
-    let spSt = reSt.split(',');
-    spSt.forEach(myFunction);
-    let parsedSt = spSt.join(',');
-    let result = await sequelize.query(`SELECT * from get_marksheet(
-        ${parsedSt}
-    );`, {
+let get_marksheet_caller = async function (options: any) {
+    let optionsArray = Object.keys(options);
+    let sql: string = 'SELECT * FROM get_marksheet(';
+    for (let i = 0; i < optionsArray.length; i++) {
+        sql = (i == (optionsArray.length -1) ? sql + ':' + optionsArray[i] + ')' : sql + ':' + optionsArray[i] + ',' );
+    }
+    let result = await sequelize.query(sql, {
+        replacements: options,
         type: Sequelize.QueryTypes.SELECT
     });
     return result;
